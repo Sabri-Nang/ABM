@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime
 
 
 class Persona:
@@ -67,20 +68,21 @@ class Solicitante(Persona):
         self.__id_tramite = id_tramite
         self.__tramite = tramite
         self.__estado = estado
+        self.__horario_solicitud = datetime.now()
 
-    def get_tramite(self):
+    def obtener_tramite(self):
         return self.__tramite
     
-    def set_tramite(self, tramite):
+    def modificar_tramite(self, tramite):
         """
         Modifica el trámite a realizar
         """
         self.__tramite = tramite
 
-    def get_estado(self):
+    def obtener_estado(self):
         return self.__estado
     
-    def set_estado(self, estado):
+    def modificar_estado(self, estado):
         self.__estado = estado
 
 
