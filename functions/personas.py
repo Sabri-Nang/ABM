@@ -57,13 +57,14 @@ class Persona:
     
 
 class Solicitante(Persona):
-    def __init__(self, tramite: str, estado: str, *args):
+    def __init__(self, id_tramite: str, tramite: str, estado: str, *args):
         """
         Solicitante pertenece a la clase Persona.
         tramite: tramite que realizará.
         estado: en que estado se encuentra el trámite.
         """
         super().__init__(*args) # inicializamos la clase padre
+        self.__id_tramite = id_tramite
         self.__tramite = tramite
         self.__estado = estado
 
