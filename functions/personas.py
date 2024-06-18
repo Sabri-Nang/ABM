@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 class Persona:
-    def __init__(self, nombre, apellido, DNI, telefono, mail=None):
+    def __init__(self, DNI, nombre=None, apellido=None, telefono=None, mail=None):
         self.__nombre = nombre
         self.__apellido = apellido
         self.__DNI = DNI
@@ -19,7 +19,7 @@ class Persona:
     def obtener_apellido(self):
         return self.__apellido
 
-    def cambiar_apellido(self, apellido):
+    def modificar_apellido(self, apellido):
         self.__apellido = apellido
 
     def obtener_DNI(self):
@@ -31,7 +31,7 @@ class Persona:
     def obtener_telefono(self):
         return self.__telefono
 
-    def cambiar_telefono(self, telefono):
+    def modificar_telefono(self, telefono):
         self.__telefono = telefono
 
     def obtener_mail(self):
@@ -69,7 +69,11 @@ class Solicitante(Persona):
         self.__tramite = tramite
         self.__estado = estado
         self.__horario_solicitud = datetime.now()
-
+        #self.__tiempo_espera = tiempo
+    
+    def obtener_id_tramite(self):
+        return self.__id_tramite
+    
     def obtener_tramite(self):
         return self.__tramite
     
@@ -85,7 +89,27 @@ class Solicitante(Persona):
     def modificar_estado(self, estado):
         self.__estado = estado
 
+    def obtener_horario_solicitud(self):
+        return self.__horario_solicitud
 
+
+class Empleado(Persona):
+    def __init__(self, puesto, *args):
+        super().__init__(*args)
+        self.__puesto = puesto
+    
+    def obtener_puesto(self):
+        return self.__puesto
+
+
+
+
+#persona1 = Persona('45123456')
+#print(persona1)
+#persona1.modificar_nombre('Florencia')
+#print(persona1)
+#df_persona1 = persona1.obtener_df()
+#print(df_persona1)
 
 
 
