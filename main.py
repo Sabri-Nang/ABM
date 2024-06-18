@@ -1,6 +1,6 @@
 from functions.base_datos import Base_Datos
 from functions.personas import Solicitante, Empleado
-from functions.functions_bd import registrar_solicitante
+from functions.functions_solicitante import registrar_solicitante
 
 
 def crear_base_empleados():
