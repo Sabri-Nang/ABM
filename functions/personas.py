@@ -43,14 +43,15 @@ class Persona:
     def __str__(self):
         diccionario = {}
         for clave, valor in self.__dict__.items():
-            diccionario[clave[10:]] = valor
+            #diccionario[clave[10:]] = valor
+            diccionario[clave[clave.index('__')+2:]] = valor
         return f'{diccionario}'
         # return '\n'.join(f'{atributo[10:]}: {valor}' for atributo, valor in self.__dict__.items())
     
     def obtener_dictionario(self):
         diccionario = {}
         for clave, valor in self.__dict__.items():
-            diccionario[clave[10:]] = valor
+            diccionario[clave[clave.index('__')+2:]] = valor
         return diccionario
 
     def obtener_df(self):
