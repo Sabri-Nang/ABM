@@ -34,13 +34,13 @@ def solicitar_tipo_tramite() -> str:
         except ValueError:
             print('El trámite seleccionado no es valido')
             continue
-    return tramites[tramite_seleccionado]
+    return tramite_seleccionado, tramites[tramite_seleccionado]
 
 
 def registrar_solicitante():
     DNI = solicitar_dni()
-    tipo_tramite = solicitar_tipo_tramite()
+    tramite_seleccionado, tipo_tramite = solicitar_tipo_tramite()
     id_tramite = random.randint(1, 10000)
     estado = 'iniciado'
     solicitante = Solicitante(id_tramite, tipo_tramite, estado, DNI)
-    return solicitante
+    return tramite_seleccionado, solicitante
