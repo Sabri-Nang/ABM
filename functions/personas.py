@@ -59,14 +59,14 @@ class Persona:
     
 
 class Solicitante(Persona):
-    def __init__(self, id_tramite: str, tramite: str, estado: str, *args):
+    def __init__(self, tramite: str, estado: str, *args):
         """
         Solicitante pertenece a la clase Persona.
         tramite: tramite que realizará.
         estado: en que estado se encuentra el trámite.
         """
+        #self.__id_tramite = random.randint(1, 10000)
         super().__init__(*args) # inicializamos la clase padre
-        self.__id_tramite = id_tramite
         self.__tramite = tramite
         self.__estado = estado
         self.__horario_solicitud = datetime.now()
@@ -103,14 +103,6 @@ class Empleado(Persona):
         return self.__puesto
 
 
-
-
-#persona1 = Persona('45123456')
-#print(persona1)
-#persona1.modificar_nombre('Florencia')
-#print(persona1)
-#df_persona1 = persona1.obtener_df()
-#print(df_persona1)
 
 
 
