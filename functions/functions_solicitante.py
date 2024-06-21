@@ -1,5 +1,21 @@
+from datetime import timedelta
+from settings.settings import base_datos, tabla_tramites, servidor
 from functions.personas import Solicitante
-import random
+from functions.base_datos_sqlserver import ejecutar_consulta, agregar_registro_a_base_datos
+
+
+def contar_datos_estado(estado, tramite):
+    consulta = f"SELECT COUNT(*) AS cantidad FROM {tabla_tramites} WHERE estado = :estado AND tramite = :tramite;"
+    df = ejecutar_consulta(base_datos, consulta, {'estado': estado, 'tramite': tramite})
+    cantidad = df['cantidad'][0]
+    return cantidad
+
+
+def obtener_id_tramite():
+    consulta = f"select top 1 id_tramite from {tabla_tramites} order by id_tramite desc;"
+    df = ejecutar_consulta(base_datos, consulta)
+    id_tramite = df['id_tramite'][0]
+    return id_tramite
 
 
 def solicitar_dni() -> int:
@@ -40,7 +56,38 @@ def solicitar_tipo_tramite() -> str:
 def registrar_solicitante():
     DNI = solicitar_dni()
     tramite_seleccionado, tipo_tramite = solicitar_tipo_tramite()
-    id_tramite = random.randint(1, 10000)
     estado = 'iniciado'
-    solicitante = Solicitante(id_tramite, tipo_tramite, estado, DNI)
-    return tramite_seleccionado, solicitante
+    solicitante = Solicitante(tipo_tramite, estado, DNI)
+    return tramite_seleccionado, tipo_tramite, solicitante
+
+
+def calcular_espera(cantidad):
+    cinco_minutos = timedelta(minutes=5)
+    tiempo_espera = cantidad * cinco_minutos
+    segundos = tiempo_espera.total_seconds()
+    horas = segundos // 3600
+    minutos = (segundos % 3600) // 60
+    return int(horas), int(minutos)
+
+
+def ingresar_solicitante():
+    tramite, tipo_tramite, solicitante = registrar_solicitante()
+    cantidad = contar_datos_estado(estado='iniciado', tramite=tipo_tramite)
+    print('-'*30)
+    print(f'Usuario: {solicitante.obtener_DNI()}')
+    print(f'El tramite seleccionado es: {tipo_tramite}')
+    print(f'Usted tiene {cantidad} personas antes')
+    horas, minutos = calcular_espera(cantidad)
+    print(f'El tiempo de espera es {horas} horas y {minutos} minutos')
+    agregar_registro_a_base_datos(servidor, base_datos, tabla_tramites, solicitante.obtener_df())
+    id_tramite = obtener_id_tramite()
+    print(f'Su id_tramite es: {id_tramite}')   
+    print('Muchas gracias por utilizar el servicio')
+    print('-'*30)
+
+
+def obtener_estado_tramite(id_tramite):
+    consulta = f"SELECT * FROM {tabla_tramites} WHERE id_tramite = :id_tramite;"
+    df = ejecutar_consulta(base_datos, consulta, {'id_tramite': id_tramite})
+    return df
+
