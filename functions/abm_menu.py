@@ -75,12 +75,15 @@ def ingresar_id():
 def ingresar_dni_empleado():
     while True:
         try:
-            dni = int(input('Ingrese su DNI: '))
-            df = verificar_dni_empleado(dni)
-            if df.empty:
-                print('El DNI ingresado no se encuentra en la base de datos de empleados')
-                continue
-            return df['DNI'][0], df['puesto'][0]
+            dni = int(input('Ingrese su DNI o presione 0 para volver al menu anterior: '))
+            if dni == 0:
+                return None
+            else:
+                df = verificar_dni_empleado(dni)
+                if df.empty:
+                    print('El DNI ingresado no se encuentra en la base de datos de empleados')
+                    continue
+                return df['DNI'][0], df['puesto'][0]
         except ValueError:
             print('El dni ingresado no es válido')
             print('Por favor verifique los valores ingresados')
@@ -126,13 +129,14 @@ def determinar_opcion_empleado(opcion, puesto):
 
 
 def mostrar_empleado():
-    dni, puesto = ingresar_dni_empleado()
-    print("{:-^30}".format(' GESTIÓN EMPLEADOS '))
-    print(f'Bienvenido al sistema')
-    print(f'DNI: {dni}')
-    print(f'Puesto: {puesto.upper()}')
-    opcion = mostrar_opciones_empleado()
-    while opcion != 3:
-        determinar_opcion_empleado(opcion, puesto)
-        print('-'*30)
+    if ingresar_dni_empleado() is not None:
+        dni, puesto = ingresar_dni_empleado()
+        print("{:-^30}".format(' GESTIÓN EMPLEADOS '))
+        print(f'Bienvenido al sistema')
+        print(f'DNI: {dni}')
+        print(f'Puesto: {puesto.upper()}')
         opcion = mostrar_opciones_empleado()
+        while opcion != 3:
+            determinar_opcion_empleado(opcion, puesto)
+            print('-'*30)
+            opcion = mostrar_opciones_empleado()
