@@ -1,4 +1,28 @@
+from functions.base_datos_sqlserver import ejecutar_consulta, eliminar_todos_registros
+from functions.base_datos_sqlserver import agregar_registro_a_base_datos
 from functions.personas import Empleado
+from settings.settings import base_datos, tabla_empleados, servidor, tabla_tramites
+
+
+def crear_tabla_empleados():
+    empleado1 = Empleado('Alumbrado', 32123147)
+    empleado2 = Empleado('Poda', 20345678)
+    empleado3 = Empleado('Licencias', 45789963)
+    empleados = [empleado1, empleado2, empleado3]
+    cantidad_empleados = len(empleados)
+    empleados_tabla = contar_empleados(base_datos)
+    if cantidad_empleados != empleados_tabla:
+        eliminar_todos_registros(base_datos, tabla_empleados)
+        for empleado in empleados:
+            agregar_registro_a_base_datos(servidor, base_datos,
+                        tabla_empleados, empleado.obtener_df())
+
+
+def contar_empleados(nombre_base_datos):
+    consulta = f"SELECT COUNT(*) AS cantidad FROM {tabla_empleados}"
+    df = ejecutar_consulta(nombre_base_datos, consulta)
+    cantidad = df['cantidad'][0]
+    return cantidad
 
 
 def cambiar_estado_tramite() -> str: #Para Empleado
@@ -22,3 +46,34 @@ def cambiar_estado_tramite() -> str: #Para Empleado
             continue
     return estados[estado_seleccionado]
 
+
+def verificar_dni_empleado(dni):
+    consulta = f"SELECT * FROM {tabla_empleados} WHERE dni = :dni;"
+    df = ejecutar_consulta(base_datos, consulta, {'dni': dni})
+    return df
+
+
+def mostrar_tramites_iniciados(puesto):
+    puesto_tramite = {'Poda': 'Poda', 'Licencias': 'Alta Licencias', 'Alumbrado': 'Alumbrado'}
+    tramite = puesto_tramite[puesto]
+    estado = 'iniciado'
+    consulta = f'SELECT * from {tabla_tramites} WHERE estado = :estado AND tramite = :tramite'
+    df = ejecutar_consulta(base_datos, consulta, {'estado': estado, 'tramite': tramite})
+    return df 
+
+
+def resolver_siguiente_tramite(puesto):
+    df = mostrar_tramites_iniciados(puesto)
+    if not df.empty:
+        tramite_a_resolver = df.iloc[0]
+        return tramite_a_resolver
+    print('No hay trámites que resolver'.upper())
+    return None
+
+
+def actualizar_estado_tramite(tramite_a_resolver):
+    id_tramite = int(tramite_a_resolver['id_tramite'])
+    nuevo_estado = cambiar_estado_tramite()
+    consulta = f"UPDATE {tabla_tramites} SET estado = :estado WHERE id_tramite = :id_tramite"
+    ejecutar_consulta(base_datos, consulta, {'estado': nuevo_estado, 'id_tramite': id_tramite})
+    print(f'El estado del trámite con id: {id_tramite} ha sido modificado a {nuevo_estado.upper()}')
