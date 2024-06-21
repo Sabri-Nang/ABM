@@ -1,6 +1,10 @@
-from functions.functions_solicitante import obtener_estado_tramite, contar_datos_estado, calcular_espera
-from functions.functions_empleado import verificar_dni_empleado, mostrar_tramites_iniciados
-from functions.functions_empleado import resolver_siguiente_tramite, actualizar_estado_tramite
+from functions.functions_solicitante import obtener_estado_tramite
+from functions.functions_solicitante import contar_datos_estado
+from functions.functions_solicitante import calcular_espera
+from functions.functions_empleado import verificar_dni_empleado
+from functions.functions_empleado import mostrar_tramites_iniciados
+from functions.functions_empleado import resolver_siguiente_tramite
+from functions.functions_empleado import actualizar_estado_tramite
 
 
 def mostrar_opciones(diccionario):
@@ -55,7 +59,7 @@ def mostrar_estado(dataframe):
 def ingresar_id():
     while True:
         try:
-            id_ingresado = int(input(f'Ingrese el ID de su trámite: '))
+            id_ingresado = int(input('Ingrese el ID de su trámite: '))
             df = obtener_estado_tramite(id_ingresado)
             if df.empty:
                 print('El ID ingresado no se encuentra en la base de datos')
@@ -108,7 +112,8 @@ def determinar_opcion_empleado(opcion, puesto):
     if opcion == 1:
         df = mostrar_tramites_iniciados(puesto)
         if not df.empty:
-            print(df[['id_tramite', 'DNI', 'tramite', 'estado', 'horario_solicitud']])
+            print(df[['id_tramite', 'DNI', 'tramite',
+                      'estado', 'horario_solicitud']])
         else:
             print('No se encontraron trámites con estado \'iniciado\'')
     elif opcion == 2:
@@ -131,4 +136,3 @@ def mostrar_empleado():
         determinar_opcion_empleado(opcion, puesto)
         print('-'*30)
         opcion = mostrar_opciones_empleado()
-

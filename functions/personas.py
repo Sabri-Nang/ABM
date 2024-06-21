@@ -3,7 +3,8 @@ from datetime import datetime
 
 
 class Persona:
-    def __init__(self, DNI, nombre=None, apellido=None, telefono=None, mail=None):
+    def __init__(self, DNI, nombre=None, apellido=None,
+                 telefono=None, mail=None):
         self.__nombre = nombre
         self.__apellido = apellido
         self.__DNI = DNI
@@ -15,7 +16,7 @@ class Persona:
 
     def modificar_nombre(self, nombre):
         self.__nombre = nombre
- 
+
     def obtener_apellido(self):
         return self.__apellido
 
@@ -36,18 +37,16 @@ class Persona:
 
     def obtener_mail(self):
         return self.__mail
-    
+
     def cambiar_mail(self, mail):
         self.__mail = mail
 
     def __str__(self):
         diccionario = {}
         for clave, valor in self.__dict__.items():
-            #diccionario[clave[10:]] = valor
             diccionario[clave[clave.index('__')+2:]] = valor
         return f'{diccionario}'
-        # return '\n'.join(f'{atributo[10:]}: {valor}' for atributo, valor in self.__dict__.items())
-    
+
     def obtener_dictionario(self):
         diccionario = {}
         for clave, valor in self.__dict__.items():
@@ -56,7 +55,7 @@ class Persona:
 
     def obtener_df(self):
         return pd.DataFrame([self.obtener_dictionario()])
-    
+
 
 class Solicitante(Persona):
     def __init__(self, tramite: str, estado: str, *args):
@@ -65,19 +64,17 @@ class Solicitante(Persona):
         tramite: tramite que realizará.
         estado: en que estado se encuentra el trámite.
         """
-        #self.__id_tramite = random.randint(1, 10000)
-        super().__init__(*args) # inicializamos la clase padre
+        super().__init__(*args)  # inicializamos la clase padre
         self.__tramite = tramite
         self.__estado = estado
         self.__horario_solicitud = datetime.now()
-        #self.__tiempo_espera = tiempo
-    
+
     def obtener_id_tramite(self):
         return self.__id_tramite
-    
+
     def obtener_tramite(self):
         return self.__tramite
-    
+
     def modificar_tramite(self, tramite):
         """
         Modifica el trámite a realizar
@@ -86,7 +83,7 @@ class Solicitante(Persona):
 
     def obtener_estado(self):
         return self.__estado
-    
+
     def modificar_estado(self, estado):
         self.__estado = estado
 
@@ -98,11 +95,6 @@ class Empleado(Persona):
     def __init__(self, puesto, *args):
         super().__init__(*args)
         self.__puesto = puesto
-    
+
     def obtener_puesto(self):
         return self.__puesto
-
-
-
-
-

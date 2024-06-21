@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
-from settings.settings import servidor, base_datos, tabla_empleados, tabla_tramites
+from settings.settings import servidor, base_datos, tabla_empleados
+from settings.settings import tabla_tramites
 from functions.base_datos_sqlserver import crear_base_datos
 
 # Cadena de conexión a la base de datos específica
@@ -33,7 +34,7 @@ class Empleados(Base):
     mail = Column(String, nullable=True)
     DNI = Column(String, nullable=False)
     puesto = Column(String, nullable=False)
-    
+
 
 def crear_tablas():
     # Crear las tablas en la base de datos
@@ -41,5 +42,3 @@ def crear_tablas():
     Base.metadata.create_all(engine)
     print(f"Se ha creado la tabla {tabla_tramites} en la base de datos {base_datos}.")
     print(f"Se ha creado la tabla {tabla_empleados} en la base de datos {base_datos}")
-
-
