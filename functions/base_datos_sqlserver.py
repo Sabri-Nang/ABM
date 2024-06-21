@@ -1,9 +1,6 @@
 from decouple import config
 import pandas as pd
-import pyodbc
 from sqlalchemy import create_engine, text, MetaData, Table
-
-servidor = config('DB_SERVER')
 
 
 def crear_base_datos(servidor, nombre_base_datos):
@@ -101,39 +98,42 @@ def eliminar_tabla(servidor, nombre_base_datos, nombre_tabla):
 def crear_tabla(servidor, nombre_base_datos, nombre_tabla, dataframe):
     connection_string = f"mssql+pyodbc://{servidor}/{nombre_base_datos}?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
     engine = create_engine(connection_string)
-    dataframe.to_sql(nombre_tabla, con=engine, index=False)
+    dataframe.to_sql(nombre_tabla, con=engine, index=False, if_exists='replace')
     print(f"Se ha creado tabla '{nombre_tabla}' en la base de datos '{nombre_base_datos}' exitosamente.")
 
 
-def agregar_dataframe_a_base_datos(servidor, nombre_base_datos, nombre_tabla, dataframe):
+def agregar_registro_a_base_datos(servidor, nombre_base_datos,
+                                   nombre_tabla, dataframe):
     connection_string = f"mssql+pyodbc://{servidor}/{nombre_base_datos}?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
     # Crear el motor de SQLAlchemy
     engine = create_engine(connection_string)
     # Agregar el DataFrame a la base de datos
     dataframe.to_sql(nombre_tabla, con=engine, if_exists='append', index=False)
-    print(f"Se ha agregado el DataFrame a la tabla '{nombre_tabla}' en la base de datos '{nombre_base_datos}' exitosamente.")
+    # print(f"Se ha agregado el registro {dataframe} a la tabla '{nombre_tabla}' en la base de datos '{nombre_base_datos}' exitosamente.")
 
 
-def ejecutar_consulta(nombre_base_datos, consulta):
+def ejecutar_consulta(nombre_base_datos, consulta, params=None):
     # Cadena de conexión a SQL Server
     servidor = config('DB_SERVER')
-    connection_string = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={servidor};DATABASE={nombre_base_datos};Trusted_Connection=yes;"
-    # Conectarse a la base de datos
-    conn = pyodbc.connect(connection_string)
-    # Crear una instancia del cursor
-    #cursor = conn.cursor()
-    # Ejecutar la consulta para obtener todos los elementos de la tabla
-    #query = f"SELECT * FROM {nombre_tabla}"
-    # Leer la consulta en un DataFrame
-    df = pd.read_sql(consulta, conn)
-    # Cerrar la conexión
-    conn.close()
-    # Mostrar el DataFrame
-    return df
+    connection_string = f"mssql+pyodbc://{servidor}/{nombre_base_datos}?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
+    engine = create_engine(connection_string)
+    with engine.connect() as conn:
+        resultado = conn.execute(text(consulta), params)
+        if resultado.returns_rows:
+            df = pd.DataFrame(resultado.fetchall(), columns=resultado.keys())
+            return df
+        else:
+            conn.commit()
+            return None
 
-
-def traer_tabla(nombre_base_datos, nombre_tabla):
+def mostrar_tabla(nombre_base_datos, nombre_tabla):
     consulta = f"SELECT * FROM {nombre_tabla}"
     df = ejecutar_consulta(nombre_base_datos, consulta)
+    print(df)
     return df
 
+
+def eliminar_todos_registros(nombre_base_datos, nombre_tabla):
+    consulta = f"delete from {nombre_tabla}"
+    ejecutar_consulta(nombre_base_datos, consulta)
+    
