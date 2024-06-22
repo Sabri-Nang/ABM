@@ -86,7 +86,7 @@ def ingresar_solicitante():
     agregar_registro_a_base_datos(servidor, base_datos,
                                   tabla_tramites, solicitante.obtener_df())
     id_tramite = obtener_id_tramite()
-    print(f'Su id_tramite es: {id_tramite}')
+    print(f'Su ID de trámite es: {id_tramite}')
     print('Muchas gracias por utilizar el servicio')
     print('-'*30)
 
