@@ -7,9 +7,12 @@ from settings.settings import servidor, tabla_tramites
 
 
 def crear_tabla_empleados():
-    empleado1 = Empleado('Alumbrado', 32123147)
-    empleado2 = Empleado('Poda', 20345678)
-    empleado3 = Empleado('Licencias', 45789963)
+    empleado1 = Empleado('Alumbrado', 33787488, 'Sabrina',
+                         'Sanches')
+    empleado2 = Empleado('Poda', 38345678, 'Florencia',
+                         'Sánchez')
+    empleado3 = Empleado('Licencias', 45789963, 'Christian',
+                         'Velásquez')
     empleados = [empleado1, empleado2, empleado3]
     cantidad_empleados = len(empleados)
     empleados_tabla = contar_empleados(base_datos)
@@ -83,4 +86,5 @@ def actualizar_estado_tramite(tramite_a_resolver):
     consulta = f"UPDATE {tabla_tramites} SET estado = :estado WHERE id_tramite = :id_tramite"
     ejecutar_consulta(base_datos, consulta, {'estado': nuevo_estado,
                                              'id_tramite': id_tramite})
+    print('-'*30)
     print(f'El estado del trámite con id: {id_tramite} ha sido modificado a {nuevo_estado.upper()}')
