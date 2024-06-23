@@ -56,7 +56,7 @@ def solicitar_tipo_tramite() -> Tuple[int, str]:
     print('Seleccione el tipo de trámite que desea realizar')
     while True:
         for k, v in tramites.items():
-            print(f'Presione {k} para el {v}')
+            print(f'Presione {k} para el trámite de {v}')
         try:
             tramite_seleccionado = int(input('Ingrese el número: '))
             if tramite_seleccionado not in [1, 2, 3]:

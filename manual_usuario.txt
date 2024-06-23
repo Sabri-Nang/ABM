@@ -1,0 +1,17 @@
+Clase Empleados  y una de Solicitantes
+Ambos:
+DNI
+id
+Empleados: tienen un puesto
+Solicitantes: tipo de tramite, id_tramite, estado de tramite y horario de soliditud
+
+Inicia el sistema:
+Da la bienvenida y las opciones:
+1: Solicitar turno
+2: Ver estado de mi trámite
+3: Soy empleado
+4: Salir
+
+Si:
+1: Solicitar turno
+Pide el DNI del solicitante, el tipo de trámite

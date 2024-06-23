@@ -98,7 +98,7 @@ def resolver_siguiente_tramite(puesto):
     '''
     df = mostrar_tramites_iniciados(puesto)
     if not df.empty:
-        tramite_a_resolver = df.iloc[0]
+        tramite_a_resolver = df.iloc[0]  # veo del dataframe la fila 0 -> .iloc[0]
         return tramite_a_resolver
     print('No hay trámites que resolver'.upper())
     return None

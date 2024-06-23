@@ -63,7 +63,7 @@ def mostrar_estado(dataframe):
         print('Por favor aguarde y será atendido')
     elif estado == 'en proceso':
         print('Su trámite esta siendo gestionado en estos momentos')
-        print('En minutos será resuelto')
+        print('Será informado al momento de que su estado se resuelva')
     elif estado == 'resuelto':
         print('Su trámite ha sido resuelto')
     print('Gracias por utilizar nuestros servicios')
