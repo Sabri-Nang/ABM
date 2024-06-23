@@ -13,6 +13,9 @@ Base = declarative_base()
 
 
 class Tramites(Base):
+    '''
+    Tabla de trámites
+    '''
     __tablename__ = tabla_tramites
     id_tramite = Column(Integer, primary_key=True, autoincrement=True)
     nombre = Column(String, nullable=True)
@@ -26,6 +29,9 @@ class Tramites(Base):
 
 
 class Empleados(Base):
+    '''
+    Tabla de empleados
+    '''
     __tablename__ = tabla_empleados
     id_empleado = Column(Integer, primary_key=True, autoincrement=True)
     nombre = Column(String, nullable=True)
@@ -37,7 +43,10 @@ class Empleados(Base):
 
 
 def crear_tablas():
-    # Crear las tablas en la base de datos
+    '''
+    Crea la base de datos en el servidor si no existe.
+    Luego crea las tablas.
+    '''
     crear_base_datos(servidor, base_datos)
     Base.metadata.create_all(engine)
     print(f"Se ha creado la tabla {tabla_tramites} en la base de datos {base_datos}.")

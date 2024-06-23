@@ -8,6 +8,11 @@ from functions.base_datos_sqlserver import agregar_registro_a_base_datos
 
 
 def contar_datos_estado(estado: str, tramite: str) -> int:
+    '''
+    Recibe un estado de trámite y un tipo de trámite.
+    Devuelve la cantidad de registros con el mismo estado y trámite
+    en la base de datos.
+    '''
     consulta = f"SELECT COUNT(*) AS cantidad FROM {tabla_tramites} WHERE estado = :estado AND tramite = :tramite;"
     df = ejecutar_consulta(base_datos, consulta, {'estado': estado,
                                                   'tramite': tramite})
@@ -16,6 +21,9 @@ def contar_datos_estado(estado: str, tramite: str) -> int:
 
 
 def obtener_id_tramite() -> int:
+    '''
+    Devuelve el id_tramite del último trámite cargado a la tabla tabla_tramites
+    '''
     consulta = f"select top 1 id_tramite from {tabla_tramites} order by id_tramite desc;"
     df = ejecutar_consulta(base_datos, consulta)
     id_tramite = df['id_tramite'][0]
@@ -24,7 +32,10 @@ def obtener_id_tramite() -> int:
 
 def solicitar_dni() -> int:
     '''
-    Solicita el DNI
+    Solicita el DNI del solicitante.
+    Verifica que el ingreso sea correcto.
+    Si es correcto, lo devuelve.
+    Sino continua hasta que se ingrese un dni válido
     '''
     while True:
         DNI = input("Ingrese su DNI: ")
@@ -38,8 +49,8 @@ def solicitar_dni() -> int:
 
 def solicitar_tipo_tramite() -> Tuple[int, str]:
     '''
-    Solicita el tipo de trámite.
-    Devuelde el trámite solicitado
+    Solicita el tipo de trámite por medio de un menú numérico.
+    Devuelve el valor numérico ingresado y el trámite solicitado (str)
     '''
     tramites = {1: 'Poda', 2: 'Alta Licencias', 3: 'Alumbrado'}
     print('Seleccione el tipo de trámite que desea realizar')
@@ -58,6 +69,12 @@ def solicitar_tipo_tramite() -> Tuple[int, str]:
 
 
 def registrar_solicitante() -> Tuple[int, str, Solicitante]:
+    '''
+    Registra los datos que ingresa el solicitante.
+    Devuelve tramite seleccionado (int), el tipo de trámite (str)
+    y la instancia solicitante con el tipo de trámite, el estado iniciado
+    y el DNI
+    '''
     DNI = solicitar_dni()
     tramite_seleccionado, tipo_tramite = solicitar_tipo_tramite()
     estado = 'iniciado'
@@ -66,6 +83,11 @@ def registrar_solicitante() -> Tuple[int, str, Solicitante]:
 
 
 def calcular_espera(cantidad) -> Tuple[int, int]:
+    '''
+    Recibe una cantidad (int)
+    Multiplica a ese valor por 5 minutos.
+    Devuelve las horas (int) y minutos (int)
+    '''
     cinco_minutos = timedelta(minutes=5)
     tiempo_espera = cantidad * cinco_minutos
     segundos = tiempo_espera.total_seconds()
@@ -75,6 +97,13 @@ def calcular_espera(cantidad) -> Tuple[int, int]:
 
 
 def ingresar_solicitante():
+    '''
+    Solicita por consola el DNI y tipo de trámite.
+    Imprime un mensaje con el DNI ingresado, el trámite seleccionado,
+    la cantidad de personas anteriores para el mismo trámite, el tiempo 
+    de espera y el id del trámite.
+    Ingresa los datos a la tabla trámites.
+    '''
     tramite, tipo_tramite, solicitante = registrar_solicitante()
     cantidad = contar_datos_estado(estado='iniciado', tramite=tipo_tramite)
     print('-'*30)
@@ -92,6 +121,10 @@ def ingresar_solicitante():
 
 
 def obtener_estado_tramite(id_tramite) -> pd.DataFrame:
+    '''
+    Recibe un id_tramite (int).
+    Devuelve un dataframe con el registro con ese id_tramite
+    '''
     consulta = f"SELECT * FROM {tabla_tramites} WHERE id_tramite = :id_tramite;"
     df = ejecutar_consulta(base_datos, consulta, {'id_tramite': id_tramite})
     return df

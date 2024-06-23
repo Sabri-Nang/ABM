@@ -7,6 +7,10 @@ from settings.settings import servidor, tabla_tramites
 
 
 def crear_tabla_empleados():
+    '''
+    Crea la tabla empleados.
+    Se asignaron 3 empleados
+    '''
     empleado1 = Empleado('Alumbrado', 33787488, 'Sabrina',
                          'Sanches')
     empleado2 = Empleado('Poda', 38345678, 'Florencia',
@@ -25,6 +29,9 @@ def crear_tabla_empleados():
 
 
 def contar_empleados(nombre_base_datos):
+    '''
+    Cuenta la cantidad de empleados en la tabla empleados
+    '''
     consulta = f"SELECT COUNT(*) AS cantidad FROM {tabla_empleados}"
     df = ejecutar_consulta(nombre_base_datos, consulta)
     cantidad = df['cantidad'][0]
@@ -54,12 +61,22 @@ def cambiar_estado_tramite() -> str:  # Para Empleado
 
 
 def verificar_dni_empleado(dni):
+    '''
+    Recibe un dni.
+    Busca ese dni en la tabla empleados.
+    Devuelve un dataframe con el resultado de la consulta
+    '''
     consulta = f"SELECT * FROM {tabla_empleados} WHERE dni = :dni;"
     df = ejecutar_consulta(base_datos, consulta, {'dni': dni})
     return df
 
 
 def mostrar_tramites_iniciados(puesto):
+    '''
+    Recibe un puesto (str).
+    Devuelve un dataframe con los trámites con estado iniciado según
+    el puesto del empleado.
+    '''
     puesto_tramite = {'Poda': 'Poda',
                       'Licencias': 'Alta Licencias',
                       'Alumbrado': 'Alumbrado'}
@@ -72,6 +89,13 @@ def mostrar_tramites_iniciados(puesto):
 
 
 def resolver_siguiente_tramite(puesto):
+    '''
+    Recibe un puesto.
+    Devuelve una serie con el trámite con estado iniciado que primero 
+    se haya solicitado.
+    Si no hay trámites con estado iniciado, muestra un mensaje y devuelve
+    None
+    '''
     df = mostrar_tramites_iniciados(puesto)
     if not df.empty:
         tramite_a_resolver = df.iloc[0]
@@ -81,6 +105,10 @@ def resolver_siguiente_tramite(puesto):
 
 
 def actualizar_estado_tramite(tramite_a_resolver):
+    '''
+    Recibe una serie con un trámite con estado iniciado.
+    Modifica el estado según el valor ingresado.
+    '''
     id_tramite = int(tramite_a_resolver['id_tramite'])
     nuevo_estado = cambiar_estado_tramite()
     consulta = f"UPDATE {tabla_tramites} SET estado = :estado WHERE id_tramite = :id_tramite"

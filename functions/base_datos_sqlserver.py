@@ -4,6 +4,11 @@ from sqlalchemy import create_engine, text, MetaData, Table
 
 
 def crear_base_datos(servidor, nombre_base_datos):
+    '''
+    Conecta al servidor y crea una base de datos.
+    Recibe el servidor (str) y el nombre de la base de datos a crear (str).
+    Si la base ya existe, muestra un mensaje indicando que ya existe
+    '''
     connection_string = f"mssql+pyodbc://{servidor}/master?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
     engine = create_engine(connection_string)
     # Crear el motor de SQLAlchemy
@@ -23,6 +28,11 @@ def crear_base_datos(servidor, nombre_base_datos):
 
 
 def eliminar_base_datos(servidor, nombre_base_datos):
+    '''
+    Elimina una base de datos del servidor.
+    Recibe el servidor y el nombre de la base de datos a eliminar.
+    Si la base de datos no existe, muestra un mensaje indicándolo
+    '''
     # Cadena de conexión a la base de datos 'master' para poder eliminar
     # una base de datos
     connection_string = f"mssql+pyodbc://{servidor}/master?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
@@ -46,6 +56,12 @@ def eliminar_base_datos(servidor, nombre_base_datos):
 
 
 def verificar_tabla_existe(servidor, nombre_base_datos, nombre_tabla):
+    '''
+    Recibe un servidor, el nombre de una base de datos y el nombre de una
+    tabla.
+    Verifica si la tabla existe en esa base de datos.
+    Devuelve un booleano.
+    '''
     # Cadena de conexión a la base de datos específica
     connection_string = f"mssql+pyodbc://{servidor}/{nombre_base_datos}?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
     engine = create_engine(connection_string)
@@ -63,6 +79,12 @@ def verificar_tabla_existe(servidor, nombre_base_datos, nombre_tabla):
 
 
 def eliminar_tabla(servidor, nombre_base_datos, nombre_tabla):
+    '''
+    Recibe un servidor, el nombre de la base de datos y el nombre de una
+    tabla.
+    Si la tabla existe en la base de datos, la elimina.
+    Si no existe, muestra un mensaje advirtiendo que no existe
+    '''
     # Cadena de conexión a la base de datos específica
     connection_string = f"mssql+pyodbc://{servidor}/{nombre_base_datos}?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
     engine = create_engine(connection_string)
@@ -83,6 +105,12 @@ def eliminar_tabla(servidor, nombre_base_datos, nombre_tabla):
 
 
 def crear_tabla(servidor, nombre_base_datos, nombre_tabla, dataframe):
+    '''
+    Recibe un servidor, el nombre de la base de datos, el nombre de la tabla
+    y un dataframe.
+    Si la tabla existe, reemplaza los valores por los del dataframe.
+    Si no existe, la crea a partir del dataframe
+    '''
     connection_string = f"mssql+pyodbc://{servidor}/{nombre_base_datos}?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
     engine = create_engine(connection_string)
     dataframe.to_sql(nombre_tabla, con=engine, index=False, if_exists='replace')
@@ -91,8 +119,12 @@ def crear_tabla(servidor, nombre_base_datos, nombre_tabla, dataframe):
 
 def agregar_registro_a_base_datos(servidor, nombre_base_datos,
                                   nombre_tabla, dataframe):
+    '''
+    Recibe un servidor, el nombre de una base de datos, el nombre de la tabla
+    y un dataframe.
+    Agrega el dataframe a la tabla en la base de datos.
+    '''
     connection_string = f"mssql+pyodbc://{servidor}/{nombre_base_datos}?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
-    # Crear el motor de SQLAlchemy
     engine = create_engine(connection_string)
     # Agregar el DataFrame a la base de datos
     dataframe.to_sql(nombre_tabla, con=engine, if_exists='append', index=False)
@@ -101,7 +133,13 @@ def agregar_registro_a_base_datos(servidor, nombre_base_datos,
 
 
 def ejecutar_consulta(nombre_base_datos, consulta, params=None):
-    # Cadena de conexión a SQL Server
+    '''
+    Recibe el nombre de una base de datos, una consulta y un diccionario de
+    parámetros, por defecto None.
+    Ejecuta la consulta, en caso de que la consulta devuelva un resultado,
+    retorna un dataframe con los resultados.
+    Sino retorna None.
+    '''
     servidor = config('DB_SERVER')
     connection_string = f"mssql+pyodbc://{servidor}/{nombre_base_datos}?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
     engine = create_engine(connection_string)
@@ -116,6 +154,10 @@ def ejecutar_consulta(nombre_base_datos, consulta, params=None):
 
 
 def mostrar_tabla(nombre_base_datos, nombre_tabla):
+    '''
+    Recibe el nombre de la base de datos y una tabla.
+    Devuelve e imprime la tabla como un dataframe
+    '''
     consulta = f"SELECT * FROM {nombre_tabla}"
     df = ejecutar_consulta(nombre_base_datos, consulta)
     print(df)
@@ -123,5 +165,9 @@ def mostrar_tabla(nombre_base_datos, nombre_tabla):
 
 
 def eliminar_todos_registros(nombre_base_datos, nombre_tabla):
+    '''
+    Recibe una base de datos y el nombre de una tabla.
+    Elimina todos los registros de la tabla.
+    '''
     consulta = f"delete from {nombre_tabla}"
     ejecutar_consulta(nombre_base_datos, consulta)

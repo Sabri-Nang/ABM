@@ -8,17 +8,25 @@ from functions.functions_empleado import actualizar_estado_tramite
 
 
 def mostrar_opciones(diccionario):
+    '''
+    Imprime clave: valor de un diccionario
+    '''
     for k, v in diccionario.items():
         print(f'{k}: {v}')
 
 
 def mensaje_bienvenida():
+    '''
+    Mensaje de bienvenida al sistema.
+    Muestra las opciones según lo que se desee realizar.
+    Verifica que la opción ingresada es correcta.
+    Devuelve la opcion ingresada.
+    '''
     print('-'*30)
     print('Bienvenido al sistema de turnos municipales')
     print('¿Qué desea hacer?')
     diccionario_opciones = {1: 'Solicitar turno', 2: 'Ver estado de mi trámite',
                             3: 'Soy empleado', 4: 'Salir'}
-    
     while True:
         mostrar_opciones(diccionario_opciones)
         try:
@@ -33,6 +41,12 @@ def mensaje_bienvenida():
 
 
 def mostrar_estado(dataframe):
+    '''
+    Recibe un dataframe con columnas, tramite, DNI, estado y id_tramite
+    Muestra un mensaje con los datos.
+    Si el estado es iniciado, muestra cuantas personas hay antes con el 
+    mismo tipo de trámite y el tiempo de espera.
+    '''
     tramite = dataframe['tramite'][0]
     DNI = dataframe['DNI'][0]
     estado = dataframe['estado'][0]
@@ -57,6 +71,12 @@ def mostrar_estado(dataframe):
 
 
 def ingresar_id():
+    '''
+    Pide el ingreso de un id_tramite. 
+    Si el id_tramite se encuentra en la base de datos, 
+    llama la funcion mostrar_estado.
+    Si no existe o es inválido, lo vuelve a solicitar.
+    '''
     while True:
         try:
             id_ingresado = int(input('Ingrese el ID de su trámite: '))
@@ -73,6 +93,12 @@ def ingresar_id():
 
 
 def ingresar_dni_empleado():
+    '''
+    Muestra el menú para los empleados solicitando su DNI.
+    Si el DNI existe en la base de datos empleado, devuelve los datos del empleado.
+    Sino vuelve a solicitarlo.
+    Si se ingresa el valor 0, se vuelve al menú de bienvenida
+    '''
     while True:
         try:
             dni = int(input('Ingrese su DNI o presione 0 para volver al menu anterior: '))
@@ -91,6 +117,9 @@ def ingresar_dni_empleado():
 
 
 def mostrar_opciones_empleado():
+    '''
+    
+    '''
     diccionario_opciones = {1: 'Ver trámites iniciados',
                             2: 'Resolver siguiente trámite',
                             3: 'Volver al inicio'}
@@ -112,6 +141,9 @@ def mostrar_opciones_empleado():
 
 
 def determinar_opcion_empleado(opcion, puesto):
+    '''
+    
+    '''
     if opcion == 1:
         df = mostrar_tramites_iniciados(puesto)
         if not df.empty:
@@ -129,6 +161,9 @@ def determinar_opcion_empleado(opcion, puesto):
 
 
 def mostrar_empleado():
+    '''
+    
+    '''
     dni, puesto, nombre, apellido = ingresar_dni_empleado()
     if dni is not None:
         print("{:-^30}".format(' GESTIÓN EMPLEADOS '))
